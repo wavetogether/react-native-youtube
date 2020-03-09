@@ -51,4 +51,36 @@ RCT_REMAP_METHOD(playVideo,
     #endif
 }
 
+RCT_REMAP_METHOD(getStreamUrl,
+                 getStreamUrlWithResolver:(NSString*)videoId
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+
+
+    #ifndef XCD_YOUTUBE_KIT_INSTALLED
+        reject(@"error", @"XCDYouTubeKit is not installed. Refer to README for instructions.", nil);
+    #else
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIViewController *root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+            [[XCDYouTubeClient defaultClient] getVideoWithIdentifier:videoId
+                                                   completionHandler:^(XCDYouTubeVideo * _Nullable video, NSError * _Nullable error) {
+                if (video) {
+                    NSDictionary *streamURLs = video.streamURLs;
+                    NSURL *streamURL = streamURLs[
+                        XCDYouTubeVideoQualityHTTPLiveStreaming] ?:
+                        streamURLs[@(XCDYouTubeVideoQualityHD720)] ?:
+                        streamURLs[@(XCDYouTubeVideoQualityMedium360)] ?:
+                        streamURLs[@(XCDYouTubeVideoQualitySmall240)
+                    ];
+                    resolve(streamURL.absoluteString);
+                } else {
+                    reject(@"error", error.localizedDescription, nil);
+                    [root dismissViewControllerAnimated:YES completion:nil];
+                }
+            }];
+        });
+    #endif
+}
+
 @end
