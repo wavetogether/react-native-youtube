@@ -71,7 +71,7 @@ RCT_REMAP_METHOD(getStreamUrl,
                         streamURLs[@(XCDYouTubeVideoQualityMedium360)] ?:
                         streamURLs[@(XCDYouTubeVideoQualitySmall240) ?:
                        streamURLs[XCDYouTubeVideoQualityHTTPLiveStreaming] ?:
-                       streamURLs[@(XCDYouTubeVideoQualityHD720)] ?:
+                       streamURLs[@(XCDYouTubeVideoQualityHD720)]
 
                     ];
                     resolve(streamURL.absoluteString);
