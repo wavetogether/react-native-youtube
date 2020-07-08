@@ -70,7 +70,9 @@ RCT_REMAP_METHOD(getStreamUrl,
                     NSURL *streamURL =
                         streamURLs[@(XCDYouTubeVideoQualityMedium360)] ?:
                         streamURLs[@(XCDYouTubeVideoQualitySmall240) ?:
-                        streamURLs[XCDYouTubeVideoQualityHTTPLiveStreaming]
+                       streamURLs[XCDYouTubeVideoQualityHTTPLiveStreaming] ?:
+                       streamURLs[@(XCDYouTubeVideoQualityHD720)] ?:
+
                     ];
                     resolve(streamURL.absoluteString);
                 } else {
